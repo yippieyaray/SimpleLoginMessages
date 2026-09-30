@@ -217,7 +217,7 @@ or interactions with other server plugins.
 
 ### Release archive
 
-`mvn clean verify` also creates `target/SimpleLoginMessages-1.0.8.zip` containing:
+`mvn clean verify` also creates `target/SimpleLoginMessages-1.0.9.zip` containing:
 
 - `SimpleLoginMessages.jar`, README, LICENSE, and NOTICE at the archive root.
 - The corresponding project under `source/`, including `pom.xml`, documentation,
@@ -235,6 +235,12 @@ version; the standalone JAR filename remains `SimpleLoginMessages.jar`.
 
 The plugin version is defined in `pom.xml`; Maven inserts it into `plugin.yml`
 during the build. The JAR filename remains `SimpleLoginMessages.jar`.
+
+### Changes in 1.0.9
+
+- Clarify nullability in test fixtures and Mockito helpers, including player and UUID values.
+- Complete nullability annotations at configuration validation boundaries.
+- Verify production and test sources with Eclipse null analysis; plugin behavior is unchanged.
 
 ### Changes in 1.0.8
 

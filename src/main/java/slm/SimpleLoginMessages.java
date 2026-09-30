@@ -90,7 +90,7 @@ public final class SimpleLoginMessages extends JavaPlugin implements Listener {
     }
 
     @Override
-    public org.bukkit.configuration.file.FileConfiguration getConfig() {
+    public org.bukkit.configuration.file.@NonNull FileConfiguration getConfig() {
         YamlConfiguration current = activeConfig;
         return current == null ? super.getConfig() : current;
     }

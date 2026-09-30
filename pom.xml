@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.raymond</groupId>
   <artifactId>simple-login-messages</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
   <licenses>
     <license>
       <name>GNU General Public License, version 2 or later</name>

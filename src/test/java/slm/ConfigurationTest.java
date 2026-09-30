@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static slm.TestMocks.mock;
+import static java.util.Objects.requireNonNull;
 
 class ConfigurationTest {
     @TempDir Path directory;
@@ -50,7 +52,7 @@ class ConfigurationTest {
         assertFalse(config.getStringList("stats.server-lines").isEmpty());
         YamlConfiguration metadata = resource("plugin.yml");
         assertEquals(SimpleLoginMessages.class.getName(), metadata.getString("main"));
-        assertFalse(metadata.getString("version").contains("${"));
+        assertFalse(requireNonNull(metadata.getString("version")).contains("${"));
         for (String permission : new String[]{"slm.stats", "slm.stats.others", "slm.reload", "slm.*"}) {
             // Permission names contain literal dots: inspect the section as a map.
             var permissions = metadata.getConfigurationSection("permissions");

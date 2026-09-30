@@ -20,6 +20,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static slm.TestMocks.mock;
+import static java.util.Objects.requireNonNull;
 
 class ConfigValidationTest {
     @TempDir Path folder;
@@ -45,13 +47,13 @@ class ConfigValidationTest {
     void legacyKeysAreRejectedEvenWithNewKeysPresent(String key) throws Exception {
         YamlConfiguration config = defaults();
         config.set(key, key.endsWith("lines") ? List.of("Old text") : "Old heading");
-        var error = assertThrows(IllegalArgumentException.class, () -> ConfigValidation.validate(config));
+        var error = requireNonNull(assertThrows(IllegalArgumentException.class, () -> ConfigValidation.validate(config)));
         assertTrue(error.getMessage().contains("No automatic migration"));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"messages.join-enabled", "messages.groups.default", "stats.player-lines", "stats.server-header", "country-fallback"})
-    void wrongTypesAreRejected(String path) throws Exception {
+    void wrongTypesAreRejected(@org.jspecify.annotations.NonNull String path) throws Exception {
         YamlConfiguration config = defaults();
         config.set(path, 42);
         assertThrows(IllegalArgumentException.class, () -> ConfigValidation.validate(config));
@@ -86,7 +88,7 @@ class ConfigValidationTest {
 
     @Test void startupLogsGreenSuccessAndFailedReloadRetainsPreviousConfigAndData() throws Exception {
         Path file = folder.resolve("config.yml");
-        defaults().save(file.toFile());
+        defaults().save(requireNonNull(file.toFile()));
         Logger logger = mock(Logger.class);
         SimpleLoginMessages plugin = plugin(logger);
         PluginManager manager = mock(PluginManager.class);
@@ -114,7 +116,7 @@ class ConfigValidationTest {
             verify(sender, never()).sendMessage("SimpleLoginMessages reloaded.");
             YamlConfiguration changed = defaults();
             changed.set("country-fallback", "New value");
-            changed.save(file.toFile());
+            changed.save(requireNonNull(file.toFile()));
             plugin.onCommand(sender, mock(Command.class), "slm", new String[]{"reload"});
             assertEquals("New value", plugin.getConfig().getString("country-fallback"));
             verify(sender).sendMessage("SimpleLoginMessages reloaded.");
@@ -132,7 +134,7 @@ class ConfigValidationTest {
             bukkit.when(Bukkit::getConsoleSender).thenReturn(console);
             plugin.onEnable();
             verify(manager).disablePlugin(plugin);
-            verify(manager, never()).registerEvents(any(), any());
+            verifyNoMoreInteractions(manager);
             verifyNoInteractions(console);
             verify(logger).severe(contains("Invalid config.yml"));
         }

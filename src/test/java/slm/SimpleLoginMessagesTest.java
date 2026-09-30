@@ -27,15 +27,18 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.MockedStatic;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static slm.TestMocks.mock;
+import static slm.TestMocks.verify;
+import static java.util.Objects.requireNonNull;
 
 class SimpleLoginMessagesTest {
     @TempDir Path directory;
     private SimpleLoginMessages plugin;
     private YamlConfiguration config;
     private YamlConfiguration data;
-    private Player player;
-    private MockedStatic<Bukkit> bukkit;
-    private final UUID uuid = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private final @org.jspecify.annotations.NonNull Player player = mock(Player.class);
+    private MockedStatic<@org.jspecify.annotations.NonNull Bukkit> bukkit;
+    private final @org.jspecify.annotations.NonNull UUID uuid = requireNonNull(UUID.fromString("00000000-0000-0000-0000-000000000001"));
     private String base() { return "players." + uuid; }
 
     @BeforeEach void setup() throws Exception {
@@ -48,10 +51,9 @@ class SimpleLoginMessagesTest {
         doReturn(directory.toFile()).when(plugin).getDataFolder();
         doReturn(Logger.getLogger("slm-test")).when(plugin).getLogger();
         set("data", data);
-        set("dataFile", directory.resolve("data.yml").toFile());
+        set("dataFile", requireNonNull(directory.resolve("data.yml").toFile()));
         set("miniMessage", MiniMessage.miniMessage());
         set("lastLoginFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.of("UTC")));
-        player = mock(Player.class);
         when(player.getUniqueId()).thenReturn(uuid);
         when(player.getName()).thenReturn("Alex");
         World world = mock(World.class);
@@ -85,7 +87,7 @@ class SimpleLoginMessagesTest {
         assertEquals(MiniMessage.miniMessage().deserialize("<green>Alex</green> 1/1/1"), join().joinMessage());
         assertEquals(MiniMessage.miniMessage().deserialize("<green>Alex</green> 2/2/1"), join().joinMessage());
         verify(player, times(1)).sendMessage(Component.text("Welcome Alex"));
-        YamlConfiguration saved = YamlConfiguration.loadConfiguration(directory.resolve("data.yml").toFile());
+        YamlConfiguration saved = YamlConfiguration.loadConfiguration(requireNonNull(directory.resolve("data.yml").toFile()));
         assertEquals(2, saved.getInt(base() + ".logins"));
         assertEquals(2, saved.getInt("totallogins"));
         assertTrue(saved.getLong(base() + ".last-login") > 0);
@@ -125,7 +127,7 @@ class SimpleLoginMessagesTest {
         join();
         when(player.getLevel()).thenReturn(42);
         plugin.onQuit(new PlayerQuitEvent(player, Component.empty(), PlayerQuitEvent.QuitReason.DISCONNECTED));
-        YamlConfiguration saved = YamlConfiguration.loadConfiguration(directory.resolve("data.yml").toFile());
+        YamlConfiguration saved = YamlConfiguration.loadConfiguration(requireNonNull(directory.resolve("data.yml").toFile()));
         assertEquals(42, saved.getInt(base() + ".levels"));
         assertEquals(1, saved.getInt("totallogins"));
     }
@@ -174,7 +176,7 @@ class SimpleLoginMessagesTest {
         YamlConfiguration disk = new YamlConfiguration();
         disk.set("totallogins", 99);
         disk.set("uniqueplayers", 500);
-        disk.save(directory.resolve("data.yml").toFile());
+        disk.save(requireNonNull(directory.resolve("data.yml").toFile()));
         when(player.hasPermission("slm.reload")).thenReturn(true);
         try (var input = getClass().getResourceAsStream("/config.yml")) {
             java.nio.file.Files.copy(java.util.Objects.requireNonNull(input), directory.resolve("config.yml"));
@@ -182,7 +184,7 @@ class SimpleLoginMessagesTest {
         plugin.onCommand(player, mock(Command.class), "slm", new String[]{"reload"});
 
         join();
-        YamlConfiguration saved = YamlConfiguration.loadConfiguration(directory.resolve("data.yml").toFile());
+        YamlConfiguration saved = YamlConfiguration.loadConfiguration(requireNonNull(directory.resolve("data.yml").toFile()));
         assertEquals(100, saved.getInt("totallogins"));
         assertFalse(saved.contains("uniqueplayers"));
     }

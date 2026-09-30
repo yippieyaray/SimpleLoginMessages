@@ -2,6 +2,7 @@
 package slm;
 
 import java.util.List;
+import org.jspecify.annotations.NonNull;
 import java.util.Locale;
 import java.util.Set;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -20,7 +21,7 @@ final class ConfigValidation {
         keys(config, Set.of("messages", "stats", "country-fallback"));
         ConfigurationSection messages = section(config, "messages");
         keys(messages, Set.of("join-enabled", "quit-enabled", "first-join-enabled", "groups"));
-        for (String key : List.of("join-enabled", "quit-enabled", "first-join-enabled")) {
+        for (String key : List.<@NonNull String>of("join-enabled", "quit-enabled", "first-join-enabled")) {
             require(messages.get(key) instanceof Boolean, "messages." + key + " must be a YAML boolean (true/false).");
         }
         ConfigurationSection groups = section(messages, "groups");
@@ -29,7 +30,7 @@ final class ConfigValidation {
             require(group.equals(group.toLowerCase(Locale.ROOT)), "messages.groups." + group + " must use a lowercase group name.");
             ConfigurationSection entry = section(groups, group);
             keys(entry, Set.of("join", "quit", "first-join"));
-            for (String key : List.of("join", "quit", "first-join")) {
+            for (String key : List.<@NonNull String>of("join", "quit", "first-join")) {
                 if (group.equals("default") || entry.contains(key)) {
                     template(entry.get(key), "messages.groups." + group + "." + key);
                 }
@@ -41,13 +42,13 @@ final class ConfigValidation {
             template(stats.get(kind + "-header"), "stats." + kind + "-header");
             Object value = stats.get(kind + "-lines");
             require(value instanceof List<?>, "stats." + kind + "-lines must be a list of strings.");
-            List<?> lines = (List<?>) value;
+            List<?> lines = java.util.Objects.requireNonNull((List<?>) value);
             for (int i = 0; i < lines.size(); i++) template(lines.get(i), "stats." + kind + "-lines[" + i + "]");
         }
         require(config.get("country-fallback") instanceof String, "country-fallback must be a string.");
     }
 
-    private static ConfigurationSection section(ConfigurationSection parent, String key) {
+    private static ConfigurationSection section(ConfigurationSection parent, @NonNull String key) {
         ConfigurationSection result = parent.getConfigurationSection(key);
         require(result != null, parent.getCurrentPath() + "." + key + " must be a section.");
         return java.util.Objects.requireNonNull(result);
@@ -62,7 +63,7 @@ final class ConfigValidation {
     private static void template(Object value, String path) {
         require(value instanceof String, path + " must be a string.");
         try {
-            MiniMessage.builder().strict(true).build().deserialize((String) value);
+            MiniMessage.builder().strict(true).build().deserialize(java.util.Objects.requireNonNull((String) value));
         } catch (RuntimeException error) {
             throw new IllegalArgumentException(path + ": invalid MiniMessage: " + error.getMessage(), error);
         }
