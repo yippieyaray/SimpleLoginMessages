@@ -1,0 +1,25 @@
+.vscode/
+
+# Build outputs and local API stubs
+/target/
+/build/
+
+# macOS metadata
+.DS_Store
+._*
+
+# Local server files
+/plugins/
+/logs/
+/crash-reports/
+/world/
+/world_nether/
+/world_the_end/
+/server.properties
+/eula.txt
+/usercache.json
+/whitelist.json
+/ops.json
+/banned-players.json
+/banned-ips.json
+*.log

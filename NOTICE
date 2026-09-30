@@ -1,0 +1,15 @@
+SimpleLoginMessages
+SPDX-License-Identifier: GPL-2.0-or-later
+
+Author: Raymond
+
+Distributed under the GNU General Public License, version 2 or (at your option)
+any later version. See LICENSE for the full terms.
+
+SimpleLoginMessages was created to replace the join and quit messaging
+functionality previously provided by PLM (Personal Login Message) by
+FantasticSkyThrow on the maintainer's server. PLM is no longer supported and
+no longer available for newer Minecraft server releases.
+
+Paper API and LuckPerms API are provided dependencies and are not bundled in
+the plugin JAR. They retain their own licenses.

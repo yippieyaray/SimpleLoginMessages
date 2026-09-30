@@ -1,0 +1,28 @@
+name: SimpleLoginMessages
+version: '${project.version}'
+main: slm.SimpleLoginMessages
+api-version: '26.2'
+author: Raymond
+softdepend: [LuckPerms]
+description: Lightweight join/quit messages and login statistics for Paper.
+commands:
+  slm:
+    description: Show SimpleLoginMessages help and statistics.
+    usage: /slm [help|stats [player]|reload]
+permissions:
+  slm.stats:
+    description: Allows a player to view their own statistics.
+    default: false
+  slm.stats.others:
+    description: Allows viewing another player's statistics.
+    default: false
+  slm.reload:
+    description: Allows reloading SimpleLoginMessages.
+    default: false
+  slm.*:
+    description: Grants all SimpleLoginMessages permissions.
+    default: false
+    children:
+      slm.stats: true
+      slm.stats.others: true
+      slm.reload: true

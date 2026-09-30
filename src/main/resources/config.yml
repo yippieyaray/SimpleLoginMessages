@@ -1,0 +1,54 @@
+# SimpleLoginMessages configuration
+# Created on first startup if config.yml does not exist. Existing files are preserved.
+# Edit this file, then run /slm reload (requires slm.reload).
+# Use spaces for indentation and quote message strings. Messages use MiniMessage.
+# Placeholders: %playername% %nickname% %group% %world% %country% %playerlist%
+# %logins% %totallogins% %uniqueplayers% %onlineplayers% %prefix% %suffix%
+# %slots% %levels% %health% %gamemode% %food% %status% %lastlogin%
+
+messages:
+  # false leaves the event's existing join/quit message unchanged.
+  join-enabled: true
+  quit-enabled: true
+  # Additional private message on the first login recorded by this plugin.
+  first-join-enabled: true
+
+  groups:
+    # Fallback for groups without a matching message. Keep this section.
+    default:
+      join: '<yellow>%playername%</yellow><gray> joined the game.</gray>'
+      quit: '<yellow>%playername%</yellow><gray> left the game.</gray>'
+      # An empty string disables this private welcome message.
+      first-join: '<gray>Welcome, </gray><yellow>%playername%</yellow><gray>!</gray>'
+
+    # Copy and uncomment to customize a LuckPerms primary group.
+    # Use the group's lowercase name; this does not create a LuckPerms group.
+    # vip:
+    #   join: '<gold>VIP </gold><yellow>%playername%</yellow><gray> joined the game.</gray>'
+    #   quit: '<gold>VIP </gold><yellow>%playername%</yellow><gray> left the game.</gray>'
+    #   first-join: ''
+
+# Player and server sections shown by /slm stats [player].
+# Empty line lists use the built-in defaults; they do not hide a section.
+stats:
+  player-header: '<gold>Player statistics</gold>'
+  player-lines:
+    - '<gray>Player:</gray> <white>%playername%</white>'
+    - '<gray>Status:</gray> <white>%status%</white>'
+    - '<gray>Last login:</gray> <white>%lastlogin%</white>'
+    - '<gray>Group:</gray> <white>%group%</white>'
+    - '<gray>World:</gray> <white>%world%</white>'
+    - '<gray>Logins:</gray> <white>%logins%</white>'
+    - '<gray>Level:</gray> <white>%levels%</white>'
+    - '<gray>Health:</gray> <white>%health%</white>'
+    - '<gray>Gamemode:</gray> <white>%gamemode%</white>'
+    - '<gray>Food:</gray> <white>%food%</white>'
+
+  server-header: '<gold>Server statistics</gold>'
+  server-lines:
+    - '<gray>Total logins:</gray> <white>%totallogins%</white>'
+    - '<gray>Unique players:</gray> <white>%uniqueplayers%</white>'
+    - '<gray>Online:</gray> <white>%onlineplayers%/%slots%</white>'
+
+# Fixed text for %country%; no GeoIP service is queried.
+country-fallback: 'Unknown'
