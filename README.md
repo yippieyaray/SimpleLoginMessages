@@ -184,17 +184,21 @@ affect the final output. There is no automatic configuration migration.
 
 ## Build and validation
 
-Use JDK 25 and Maven 3.9.11, the tools used for the verified local build:
+Use the existing JDK 25 and Maven 3.9.11 installations used for the local build.
+The project includes [build.sh](build.sh), which selects a fixed user-local tool
+location instead of any temporary path.
 
 ```sh
-java -version
-mvn -version
-mvn clean verify
+./build.sh
 ```
 
-Check that Maven reports the intended JDK. Select it per shell or invocation;
-there is no need to change system-wide Java settings. The first build requires
-network access to obtain dependencies.
+The script exports `JAVA_HOME` and starts Maven from
+`~/.local/share/minecraft-devtools` by default. Set `SIMPLELOGINMESSAGES_TOOLS_DIR`
+to change that shared tools directory, or set `SIMPLELOGINMESSAGES_JAVA_HOME`
+and `SIMPLELOGINMESSAGES_MAVEN_HOME` to override the installations individually.
+Check that Maven reports the intended JDK. Maven uses its default user-local dependency repository
+(`~/.m2/repository`); do not override `maven.repo.local` with a temporary path.
+The first build requires network access to obtain dependencies.
 
 Output: `target/SimpleLoginMessages.jar`. Paper and LuckPerms APIs are
 `provided` dependencies and are not bundled. LICENSE and NOTICE are included
@@ -208,8 +212,10 @@ point, version filtering, and default permissions.
 
 Run `mvn test` for tests only, or `mvn clean verify` for a clean build with tests.
 Reports are written to `target/surefire-reports/`. Test dependencies are not bundled
-in the plugin JAR. Mockito is supplied as a test JVM agent; compilation uses a
-separate `javac` process to avoid an observed in-process compiler failure on JDK 25.
+in the plugin JAR. Surefire loads Mockito as a test JVM agent explicitly, using
+the same pinned version as the test dependency, so Mockito does not need dynamic
+agent attachment. Compilation uses a separate `javac` process to avoid an
+observed in-process compiler failure on JDK 25.
 
 These are isolated regression tests with mocked server services, not a running
 Paper server. They do not verify plugin loading, actual LuckPerms installation,
@@ -223,8 +229,8 @@ or interactions with other server plugins.
 - The corresponding project under `source/`, including `pom.xml`, documentation,
   licenses, Java sources, resources, tests, and the ZIP assembly descriptor.
 
-Extract the ZIP, change into `source/`, and run `mvn clean verify` with JDK 25 and
-Maven 3.9.11 to rebuild it. The first build needs access to dependency repositories.
+Extract the ZIP, change into `source/`, and run `./build.sh` or `mvn clean verify`
+with JDK 25 and Maven 3.9.11. The first build needs access to dependency repositories.
 Local IDE settings, Git data, build outputs, and server runtime files are excluded.
 Archive timestamps are fixed through `project.build.outputTimestamp`; use the same
 JDK, Maven, and dependencies when comparing rebuilt artifacts.
